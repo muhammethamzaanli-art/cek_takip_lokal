@@ -6,11 +6,18 @@ workflows:
     environment:
       flutter: stable
     scripts:
-      - name: Projeyi Hazırla ve Derle
+      - name: Projeyi Hazırla ve Gradle Güncelle
         script: |
           unzip -o *.zip
           PROJ_DIR=$(find . -maxdepth 2 -name "pubspec.yaml" -exec dirname {} \;)
           cd "$PROJ_DIR"
+          
+          # Gradle versiyonunu güncel sürüme yükselt (uyumsuzluğu çözer)
+          if [ -f "android/gradle/wrapper/gradle-wrapper.properties" ]; then
+            sed -i '' 's/gradle-.*-all.zip/gradle-7.6.1-all.zip/g' android/gradle/wrapper/gradle-wrapper.properties
+            sed -i '' 's/gradle-.*-bin.zip/gradle-7.6.1-bin.zip/g' android/gradle/wrapper/gradle-wrapper.properties
+          fi
+
           flutter pub get
           flutter build apk --release
     artifacts:
