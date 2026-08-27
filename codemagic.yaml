@@ -6,19 +6,15 @@ workflows:
     environment:
       flutter: stable
     scripts:
-      - name: ZIP dosyasini aç
+      - name: Projeyi Hazırla ve Derle
         script: |
-          unzip -o cek_takip_lokal.zip -d .
-      - name: Bağımlılıkları indir
-        script: |
-          cd cek_takip_lokal
+          unzip -o *.zip
+          PROJ_DIR=$(find . -maxdepth 2 -name "pubspec.yaml" -exec dirname {} \;)
+          cd "$PROJ_DIR"
           flutter pub get
-      - name: Android APK derle (release)
-        script: |
-          cd cek_takip_lokal
           flutter build apk --release
     artifacts:
-      - cek_takip_lokal/build/app/outputs/flutter-apk/*.apk
+      - "**/build/app/outputs/flutter-apk/*.apk"
     publishing:
       email:
         recipients:
