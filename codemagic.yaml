@@ -7,20 +7,13 @@ workflows:
       java: 17
       flutter: stable
     scripts:
-      - name: Projeyi Hazırla ve Gradle Güncelle
+      - name: Projeyi Hazırla ve Derle
         script: |
           unzip -o *.zip
           PROJ_DIR=$(find . -maxdepth 2 -name "pubspec.yaml" -exec dirname {} \;)
           cd "$PROJ_DIR"
-          
-          # Gradle versiyonunu Java 17 ile tam uyumlu 8.4 sürümüne yükselt
-          if [ -f "android/gradle/wrapper/gradle-wrapper.properties" ]; then
-            sed -i '' 's/gradle-.*-all.zip/gradle-8.4-all.zip/g' android/gradle/wrapper/gradle-wrapper.properties
-            sed -i '' 's/gradle-.*-bin.zip/gradle-8.4-bin.zip/g' android/gradle/wrapper/gradle-wrapper.properties
-          fi
-
           flutter pub get
-          flutter build apk --release
+          flutter build apk --release --no-tree-shake-icons
     artifacts:
       - "**/build/app/outputs/flutter-apk/*.apk"
     publishing:
